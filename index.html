@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>IMC y FizzBuzz</title>
+  </head>
+<body>
+  <h1>Ejercicio: programa de consola</h1>
+  <section>
+    <h1>A. Calculadora de IMC</h1>
+    <form id="form-imc">
+      <label>Peso (kg)
+        <input id="peso" type="text" placeholder="Ej. 70">
+      </label>
+      <label>Altura (metros)
+        <input id="altura" type="text" placeholder="Ej. 1.75">
+      </label>
+      <button type="submit">Calcular</button>
+    </form>
+    <div id="resultado-imc" class="resultado"></div>
+  </section>
+  <section>
+    <h1>B. FizzBuzz</h1>
+    <form id="form-fizz">
+      <label>Número (n)
+        <input id="n" type="text" placeholder="Ej. 15">
+      </label>
+      <button type="submit">Ejecutar</button>
+    </form>
+    <div id="resultado-fizz" class="resultado"></div>
+  </section>
+
+  <script>
+    function esNumeroPositivo(valor) {
+      return typeof valor === "number" && !isNaN(valor) && valor > 0;
+    }
+
+    function calcularIMC(peso, altura) {
+      if (!esNumeroPositivo(peso) || !esNumeroPositivo(altura)) {
+        throw new Error("El peso y la altura deben ser números mayores que 0.");
+      }
+      return peso / (altura * altura);
+    }
+
+    function clasificarIMC(imc) {
+      if (imc < 18.5) return "Bajo peso";
+      if (imc < 25) return "Normal";
+      if (imc < 30) return "Sobrepeso";
+      return "Obesidad";
+    }
+
+    function fizzBuzz(n) {
+      if (n.trim() === "") {
+        throw new Error("El valor no puede estar vacío");
+      }
+      if (isNaN(n)) {
+        throw new Error("El valor debe ser un número");
+      }
+      if (n <= 0) {
+        throw new Error("El numero debe ser mayor que 0");
+      }
+      if (!Number.isInteger(Number(n))) {
+        throw new Error("El numero no puede tener decimales");
+      }
+
+      const resultado = [];
+      for (let i = 1; i <= n; i++) {
+        if (i % 15 === 0) resultado.push("FizzBuzz");
+        else if (i % 3 === 0) resultado.push("Fizz");
+        else if (i % 5 === 0) resultado.push("Buzz");
+        else resultado.push(i);
+      }
+      return resultado.join("\n");
+    }
+
+    function mostrar(idElemento, texto, esError) {
+      const div = document.getElementById(idElemento);
+      div.textContent = texto;
+      div.className = "resultado" + (esError ? " error" : "");
+    }
+
+    document.getElementById("form-imc").addEventListener("submit", function (e) {
+      e.preventDefault();
+      try {
+        const peso = Number(document.getElementById("peso").value);
+        const altura = Number(document.getElementById("altura").value);
+        const imc = calcularIMC(peso, altura);
+        mostrar("resultado-imc", 'Tu IMC es ' + imc.toFixed(2) + ' (' + clasificarIMC(imc) + ')', false);
+      } catch (error) {
+        mostrar("resultado-imc", 'Error: ' + error.message, true);
+      }
+    });
+
+    document.getElementById("form-fizz").addEventListener("submit", function (e) {
+      e.preventDefault();
+      try {
+        mostrar("resultado-fizz", fizzBuzz(document.getElementById("n").value), false);
+      } catch (error) {
+        mostrar("resultado-fizz", 'Error: ' + error.message, true);
+      }
+    });
+  </script>
+</body>
+</html>
